@@ -1,0 +1,7 @@
+node_map:
+  centos7:
+    hosts:
+      - 192.168.122.50
+      - 192.168.122.51
+    fabruns:
+      - influxdb/influxdb

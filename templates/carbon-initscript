@@ -1,0 +1,93 @@
+#!/bin/bash
+#
+# {{description}}
+# chkconfig: - 98 02
+#
+
+# Source function library.
+. /etc/init.d/functions
+
+name="{{name}}"
+prog="carbon-{{name}}"
+user="{{user}}"
+exec="{{exec}}"
+wait_interval="{{initscript.wait_interval}}"
+wait_interval_time="{{initscript.wait_interval_time}}"
+
+
+start_exec() {
+    $exec $name start &> /dev/null &
+    return $?
+}
+
+start() {
+    [ -x $exec ] || exit 5
+
+    echo -n "Starting $prog: "
+    daemon --user $user "`start_exec`"
+    retval=$?
+
+    echo
+    return $retval
+}
+
+stop() {
+    echo -n "Shutting down $prog: "
+    daemon --user $user "$exec $name stop"
+    retval=$?
+    echo
+
+    if [ $retval ]; then
+        wait_stop
+        retval=$?
+    fi
+    return $retval
+}
+
+# service stop を実行してもしらばくはプロセスが動き続けるため、一定時間待機させる
+wait_stop() {
+    echo -n "Waiting to stop $prog"
+    for i in $(seq 0 $wait_interval)
+    do
+       rh_status || break
+       sleep $wait_interval_time
+       [ $i == $wait_interval ] && return 1
+    done
+
+    return 0
+}
+
+rh_status() {
+    $exec $name status
+    retval=$?
+
+    echo
+    return $retval
+}
+
+rh_status_q() {
+    rh_status 2>&1
+}
+
+case "$1" in
+    start)
+        rh_status_q && exit 0
+        start
+    ;;
+    stop)
+        rh_status_q || exit 0
+        stop
+    ;;
+    status)
+        rh_status
+    ;;
+    restart)
+        stop
+        start
+    ;;
+    *)
+        echo "Usage: $prog> {start|stop|status|restart"
+        exit 1
+    ;;
+esac
+exit $?
