@@ -3,5 +3,6 @@ node_map:
     hosts:
       - 192.168.122.50
       - 192.168.122.51
+      - 192.168.122.52
     fabruns:
       - influxdb/influxdb

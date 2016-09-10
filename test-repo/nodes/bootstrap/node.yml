@@ -24,6 +24,13 @@ test_bootstrap:
       ip: 192.168.122.51
       ram: 2048
       disk_size: 40
+    - name: centos7_3
+      template: user-data_centos7
+      src_image: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1511.qcow2c.xz
+      vcpus: 1
+      ip: 192.168.122.52
+      ram: 2048
+      disk_size: 40
   iptables:
     - ip: 192.168.122.50
       ports:
@@ -31,6 +38,11 @@ test_bootstrap:
         - [43306, 43306]
         - [49999, 49999]
     - ip: 192.168.122.51
+      ports:
+        - [40080, 50080]
+        - [43306, 53306]
+        - [49999, 59999]
+    - ip: 192.168.122.52
       ports:
         - [40080, 50080]
         - [43306, 53306]

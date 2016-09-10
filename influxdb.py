@@ -14,7 +14,8 @@ class Influxdb(SimpleBase):
             'CentOS Linux 7.*': [
                 'git',
                 'wget',
-                'influxdb',
+                'influxdb-0.11.1',
+                {'name': 'grafana', 'path': 'https://grafanarel.s3.amazonaws.com/builds/grafana-3.1.1-1470047149.x86_64.rpm'}
             ]
         }
 
@@ -25,6 +26,8 @@ class Influxdb(SimpleBase):
         filer.template('/etc/yum.repos.d/influxdb.repo')
 
         self.install_packages()
+        filer.template('/etc/influxdb/influxdb.conf')
+        filer.template('/etc/default/influxdb')
         self.start_services()
 
         with api.cd('/tmp'):
