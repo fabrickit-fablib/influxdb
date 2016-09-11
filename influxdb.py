@@ -14,21 +14,24 @@ class Influxdb(SimpleBase):
             'CentOS Linux 7.*': [
                 'git',
                 'wget',
+                'nmap-ncat',
                 'influxdb-0.11.1',
                 {'name': 'grafana', 'path': 'https://grafanarel.s3.amazonaws.com/builds/grafana-3.1.1-1470047149.x86_64.rpm'}
             ]
         }
 
-        self.services = ['influxdb']
+        self.services = ['influxdb', 'carbon-relay-ng']
 
     def setup(self):
         data = self.init()
         filer.template('/etc/yum.repos.d/influxdb.repo')
 
         self.install_packages()
-        filer.template('/etc/influxdb/influxdb.conf')
-        filer.template('/etc/default/influxdb')
-        self.start_services()
+        if filer.template('/etc/influxdb/influxdb.conf'):
+            self.handlers['restart_influxdb'] = True
+
+        if filer.template('/etc/default/influxdb'):
+            self.handlers['restart_influxdb'] = True
 
         with api.cd('/tmp'):
             run('[ -e go1.7.linux-amd64.tar.gz ] || wget https://storage.googleapis.com/golang/go1.7.linux-amd64.tar.gz')
@@ -42,3 +45,11 @@ class Influxdb(SimpleBase):
              '/tmp/go/bin/go get github.com/jteeuwen/go-bindata/...;'
              'cd "$GOPATH/src/github.com/graphite-ng/carbon-relay-ng";'
              'make;')
+
+        if filer.template('/etc/carbon-relay-ng.ini'):
+            self.handlers['restart_carbon-relay-ng'] = True
+
+        filer.template('/etc/init.d/carbon-relay-ng', mode='755')
+
+        self.start_services()
+        self.exec_handlers()
