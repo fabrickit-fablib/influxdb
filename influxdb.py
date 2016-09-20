@@ -20,7 +20,7 @@ class Influxdb(SimpleBase):
             ]
         }
 
-        self.services = ['influxdb', 'carbon-relay-ng']
+        self.services = ['influxdb', 'carbon-relay-ng', 'grafana-server']
 
     def setup(self):
         data = self.init()
