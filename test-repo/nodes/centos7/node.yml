@@ -1,8 +1,14 @@
 node_map:
-  centos7:
+  influxdb:
     hosts:
-      - 192.168.122.50
-      - 192.168.122.51
-      - 192.168.122.52
+      - 172.16.100.131
+      - 172.16.100.132
     fabruns:
       - influxdb/influxdb
+
+  telegraf:
+    hosts:
+      - 172.16.100.131
+      - 172.16.100.132
+    fabruns:
+      - influxdb/telegraf
