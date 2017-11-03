@@ -12,3 +12,9 @@ node_map:
       - 172.16.100.132
     fabruns:
       - influxdb/telegraf
+
+  grafana:
+    hosts:
+      - 172.16.100.131
+    fabruns:
+      - influxdb/grafana

@@ -38,3 +38,5 @@ class Influxdb(SimpleBase):
 
         self.enable_services().start_services()
         self.exec_handlers()
+
+        run("influx -execute 'CREATE DATABASE telegraf'")

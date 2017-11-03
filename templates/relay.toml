@@ -2,7 +2,7 @@
 
 [[http]]
 name = "example-http"
-bind-addr = "{{ node.ip.default_dev.ip }}:9096"
+bind-addr = "0.0.0.0:9096"
 output = [
 {% for host in hosts %}
     { name="{{ host }}", location = "http://{{ host }}:8086/write" },
@@ -11,7 +11,7 @@ output = [
 
 [[udp]]
 name = "example-udp"
-bind-addr = "127.0.0.1:9096"
+bind-addr = "0.0.0.0:9096"
 read-buffer = 0 # default
 output = [
 {% for host in hosts %}
