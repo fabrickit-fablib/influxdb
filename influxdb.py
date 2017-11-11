@@ -40,3 +40,5 @@ class Influxdb(SimpleBase):
         self.exec_handlers()
 
         run("influx -execute 'CREATE DATABASE telegraf'")
+        # run("influx -execute 'CREATE USER root WITH PASSWORD \"root\" WITH ALL PRIVILEGES;'")
+        # run("influx -execute 'CREATE RETENTION POLICY auto ON telegraf DURATION 10 REPLICATION 1 DEFAULT;'")
