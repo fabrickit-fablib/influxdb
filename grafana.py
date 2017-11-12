@@ -1,5 +1,6 @@
 # coding: utf-8
 
+import json
 import time
 from fabkit import *  # noqa
 from fablib.base import SimpleBase
@@ -26,28 +27,20 @@ class Grafana(SimpleBase):
         if filer.template('/etc/grafana/grafana.ini', data=data):
             self.handlers['restart_grafana-server'] = True
 
-        filer.mkdir('/etc/grafana/dashboards')
-        filer.template('/etc/grafana/dashboards/telegraf-system.json', data=data)
-
         self.enable_services().start_services()
         self.exec_handlers()
         time.sleep(10)
 
-        run("""curl -k -i -XPOST -H "Accept: application/json" -H "Content-Type: application/json" "http://admin:admin@localhost:3000/api/datasources" -d '
-        {
-           "name": "influxdb-telegraf-datasource",
-           "type": "influxdb",
-           "access": "'"proxy"'",
-           "url": "'"localhost:8086"'",
-           "password": "'""'",
-           "user": "'""'",
-           "database": "'"telegraf"'"
-         }'
-         """)
+        for datasource in data['datasources']:
+            option = json.dumps(datasource)
+            self.curl_api(path="/datasources", option="-d '{0}'".format(option))
 
-        run("""
-       for filename in /etc/grafana/dashboards/*.json; do
-           echo "Importing ${filename} ..."
-           curl -k -i -XPOST --data "@${filename}" -H "Accept: application/json" -H "Content-Type: application/json" "http://admin:admin@localhost:3000/api/dashboards/db"
-       done
-       """)
+        filer.mkdir('/etc/grafana/dashboards')
+        for dashboard in data['dashboards']:
+            file_path = '/etc/grafana/dashboards/{0}.json'.format(dashboard)
+            filer.template(file_path)
+            self.curl_api(path="/dashboards/db", option='--data "@{0}"'.format(file_path))
+
+    def curl_api(self, path, option):
+        run('curl -k -i -XPOST -H "Accept: application/json" -H "Content-Type: application/json"'
+            ' "http://admin:admin@localhost:3000/api{0}" {1}'.format(path, option))
