@@ -15,9 +15,9 @@ class Influxdb(SimpleBase):
                 'git',
                 'wget',
                 'vim',
-                'influxdb',
                 'influxdb-relay',
-                {'name': 'telegraf', 'path': 'https://dl.influxdata.com/telegraf/releases/telegraf-1.4.3-1.x86_64.rpm'}  # noqa
+                {'name': 'influxdb', 'path': 'https://dl.influxdata.com/influxdb/releases/influxdb-1.6.0.x86_64.rpm'},  # noqa
+                {'name': 'telegraf', 'path': 'https://dl.influxdata.com/telegraf/releases/telegraf-1.7.2-1.x86_64.rpm'}  # noqa
             ]
         }
 

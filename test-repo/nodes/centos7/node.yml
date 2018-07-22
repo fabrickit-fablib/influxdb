@@ -1,20 +1,18 @@
 node_map:
   influxdb:
     hosts:
-      - 172.16.100.131
-      - 172.16.100.132
+      - kubernetes-centos7-[1-2].example.com
     fabruns:
       - influxdb/influxdb
 
   telegraf:
     hosts:
-      - 172.16.100.131
-      - 172.16.100.132
+      - kubernetes-centos7-[1-2].example.com
     fabruns:
       - influxdb/telegraf
 
   grafana:
     hosts:
-      - 172.16.100.131
+      - kubernetes-centos7-1.example.com
     fabruns:
       - influxdb/grafana
